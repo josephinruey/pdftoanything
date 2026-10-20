@@ -32,7 +32,7 @@ export const tools: Tool[] = [
   { id: 'pdf-a', title: 'PDF 轉 PDF/A', description: '轉為標準封存格式，讓文件長久保存。', category: 'convert', color: 'blue', icon: FileCheck2 },
   { id: 'repair', title: '修復 PDF', description: '嘗試恢復受損的文件，找回重要內容。', category: 'optimize', color: 'green', icon: Wrench },
   { id: 'numbers', title: '添加頁碼', description: '為文件加上頁碼，閱讀與查找更方便。', category: 'edit', color: 'pink', icon: ListOrdered, local: true },
-  { id: 'scan', title: '掃描為 PDF', description: '上傳文件照片，整合成一份 PDF 文件。', category: 'organize', color: 'coral', icon: ScanLine, local: true, accept: 'image/jpeg,image/png' },
+  { id: 'scan', title: '手機掃描文件', description: '用手機拍攝文件，選擇匯出圖片或多頁 PDF。', category: 'organize', color: 'coral', icon: ScanLine, fresh: true, local: true, accept: 'image/jpeg,image/png' },
   { id: 'ocr', title: 'OCR 文字辨識', description: '辨識掃描文件，將圖像變成可搜尋的文字。', category: 'optimize', color: 'green', icon: ScanText },
   { id: 'compare', title: '比較 PDF', description: '並排比較兩份文件，快速找出文字差異。', category: 'security', color: 'blue', icon: Columns2, local: true },
   { id: 'redact', title: 'PDF 標記密文', description: '永久移除敏感資訊，保護文件中的隱私。', category: 'security', color: 'blue', icon: ScanEye },

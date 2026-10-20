@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import JSZip from 'jszip';
+import { testScanner } from './scanner.mjs';
 const temp = await fs.mkdtemp(path.join(tmpdir(), 'pdfolio-test-'));
 const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', '--host', '127.0.0.1', '--port', '4174', '--strictPort'], { stdio: ['ignore', 'pipe', 'pipe'] });
 let serverOutput = ''; server.stdout.on('data', d => serverOutput += d); server.stderr.on('data', d => serverOutput += d);
@@ -41,5 +42,6 @@ const chooserPromise=page.waitForEvent('filechooser'); await page.getByRole('but
 await page.setViewportSize({width:390,height:844});await page.waitForTimeout(400);if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Mobile horizontal overflow');
 console.log('PASS mobile layout');
 if(errors.length)throw Error('Browser errors: '+errors.join('; '));
-console.log('All 23 functional checks passed.');
+await testScanner(browser, 'http://127.0.0.1:4174', temp);
+console.log('All 23 existing checks and 9 scanner checks passed.');
 } finally { await browser?.close(); server.kill('SIGTERM'); await fs.rm(temp, { recursive: true, force: true }); }
