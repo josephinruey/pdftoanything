@@ -76,3 +76,28 @@ npm run preview -- --port 4175 --base=/pdftoanything/
 - 接受瀏覽器可解碼的圖片；HEIC 若無法讀取會提示改用 JPG，不會默默略過。
 
 `npm test` 包含模擬手機拍攝與相簿選取、頁面整理、單張 JPG / PNG、多頁 ZIP、PDF 頁面順序、旋轉與色彩的瀏覽器測試。原生相機操作仍需在實體 iPhone / Android 裝置上確認。
+
+## 單一 HTML 離線版
+
+**直接下載：** [離線版 ZIP](https://raw.githubusercontent.com/josephinruey/pdftoanything/main/downloads/PDFolio-offline.zip)。解壓縮後只有一個 `PDFolio.html`，以 Chrome 或 Edge 開啟即可。若下載沒有自動開始，可到 [GitHub 下載目錄](https://github.com/josephinruey/pdftoanything/tree/main/downloads) 選擇 ZIP，再使用「Download raw file」。HTML 內嵌字型與引擎，因此檔案較大；GitHub 的程式碼預覽不等於可執行的網頁預覽。
+
+
+```sh
+npm ci
+npm run build:html
+npm run test:html
+```
+
+產生 `dist-standalone/PDFolio.html`（約 12.5 MB）。將這一個檔案複製到電腦，以最新版 Chrome 或 Edge 直接開啟，不需 Node.js、網路、相鄰資源目錄或本機伺服器。介面與 33 個入口保留原樣，現有 18 項本機工具可離線處理；原本未啟用的 15 項服務不會因打包而變成可用。
+
+程式碼、CSS、DM Sans / Noto Sans TC 字型、PDF.js worker、PDF 字型／CMap／WASM 資源及第三方授權聲明均包含在 HTML 裡。只在離線打包時對儲存與頁面 ID 加入本機來源的相容性處理，網站版本不變。瀏覽器若不允許本機檔案使用 localStorage，收藏與使用紀錄仍能在目前開啟期間操作，但不會跨次保留。手機拍攝與分享能力依裝置瀏覽器支援而定。
+
+離線測試實際操作 17 項一般工具與掃描匯出、下載、字型、搜尋、收藏及手機版，並確認沒有外部 HTTP 請求。若測試機的受管理 Chromium 禁止 `file:` 導航，測試會明確回報，改在斷網的 opaque-origin 文件中載入同一份 HTML 驗證；不會關閉瀏覽器的管理政策。因此這種環境下的測試不等同直接雙擊檔案的實機驗證。
+
+重新製作可下載的 HTML 與 ZIP：
+
+```sh
+npm run package:html
+```
+
+產物位於 `downloads/`；ZIP 只包含單一 HTML，打包時會驗證解壓內容與原檔完全相同。

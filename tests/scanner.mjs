@@ -3,13 +3,15 @@ import fs from 'node:fs/promises';
 import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
 
-export async function testScanner(browser, baseURL, temp) {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+export async function testScanner(browser, baseURL, temp, options = {}) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, offline: options.offline ?? false });
   const page = await context.newPage();
-  const errors = [];
+  const errors = [], network = [];
+  if (options.offline) page.on('request', request => { if (/^https?:/.test(request.url())) network.push(request.url()); });
   page.on('pageerror', e => errors.push(e.message));
   try {
-    await page.goto(baseURL);
+    if (options.openPage) await options.openPage(page);
+    else await page.goto(baseURL);
     await page.getByRole('heading', { name: '手機掃描文件', exact: true }).waitFor();
     const photos = await page.evaluate(async () => {
       async function photo(color, width, height) {
@@ -105,6 +107,7 @@ export async function testScanner(browser, baseURL, temp) {
     console.log('PASS scanner page limit and mobile layout');
     await page.keyboard.press('Escape'); assert.equal(await page.getByRole('dialog').count(), 0);
     // Exercise large-photo normalization and filename fallback with the same production module.
+    if (options.testModule !== false) {
     const normalization = await page.evaluate(async () => {
       const { prepareScan, exportScan } = await import('/src/scanner.ts');
       const c = document.createElement('canvas'); c.width = 3000; c.height = 1500;
@@ -117,6 +120,8 @@ export async function testScanner(browser, baseURL, temp) {
     });
     assert.deepEqual(normalization, { width: 2400, height: 1200, name: '掃描文件.png', rejected: true });
     console.log('PASS scanner large-photo normalization, filename fallback and empty-document rejection');
+    }
     assert.deepEqual(errors, []);
+    if (options.offline) assert.deepEqual(network, []);
   } finally { await context.close(); }
 }

@@ -7,7 +7,10 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node tests/smoke.mjs"
+    "test": "node tests/smoke.mjs",
+    "build:html": "node scripts/build-standalone.mjs",
+    "test:html": "node tests/standalone.mjs",
+    "package:html": "npm run build:html && node scripts/package-standalone.mjs"
   },
   "dependencies": {
     "jszip": "^3.10.1",
@@ -18,9 +21,12 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/noto-sans-tc": "^5.3.1",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.4.1",
+    "esbuild": "^0.28.2",
     "playwright": "^1.64.1",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
